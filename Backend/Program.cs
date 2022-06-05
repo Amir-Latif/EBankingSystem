@@ -1,8 +1,13 @@
 using Backend.Data;
+using Backend.Models;
+using Backend.Services.JWT;
 using Backend.Services.SendGrid;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +18,7 @@ var configuration = builder.Configuration;
 // DB
 services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(configuration
-    .GetConnectionString(builder.Environment.IsDevelopment()? "Development" : "Production")));
+    .GetConnectionString(builder.Environment.IsDevelopment() ? "Development" : "Production")));
 
 services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -21,8 +26,11 @@ services.AddDatabaseDeveloperPageExceptionFilter();
 services.AddControllers();
 
 // Identity
-services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+services
+    .AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
+
 // Configure Password settings.
 services.Configure<IdentityOptions>(options =>
 {
@@ -33,6 +41,29 @@ services.Configure<IdentityOptions>(options =>
     options.Password.RequiredLength = 8;
     options.Password.RequiredUniqueChars = 1;
 });
+// JWT
+services.Configure<JWTModel>(configuration.GetSection("JWT"));
+services.AddScoped<IJWTService, JWTService>();
+services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+        .AddJwtBearer(o =>
+        {
+            o.RequireHttpsMetadata = false;
+            o.SaveToken = false;
+            o.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidIssuer = configuration["JWT:Issuer"],
+                ValidAudience = configuration["JWT:Audience"],
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]))
+            };
+        });
 
 // SendGrid Mailing
 services.Configure<AuthMessageSenderOptions>(configuration.GetSection("SendGrid"));

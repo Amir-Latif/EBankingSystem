@@ -30,7 +30,7 @@ namespace Backend.Services.SendGrid
             var client = new SendGridClient(_options.Key);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress(_options.Email, "Team 8 - Sprints"),
+                From = new EmailAddress(_options.Email, "Team 12 - Sprints"),
                 Subject = subject,
                 PlainTextContent = body,
                 HtmlContent = body

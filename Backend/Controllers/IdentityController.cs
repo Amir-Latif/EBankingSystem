@@ -1,8 +1,10 @@
 using Backend.Models;
+using Backend.Services.JWT;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 namespace Backend.Controllers
@@ -17,13 +19,14 @@ namespace Backend.Controllers
         private readonly IUserEmailStore<User> _emailStore;
         private readonly SignInManager<User> _signInManager;
         private readonly IEmailSender _emailSender;
-
+        private readonly IJWTService _jwtService;
 
         public IdentityController(
             UserManager<User> userManager,
             IUserStore<User> userStore,
             SignInManager<User> signInManager,
-            IEmailSender emailSender
+            IEmailSender emailSender,
+            IJWTService jwtService
             )
         {
             _userManager = userManager;
@@ -31,6 +34,7 @@ namespace Backend.Controllers
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _emailSender = emailSender;
+            _jwtService = jwtService;
         }
         #endregion
 
@@ -58,7 +62,13 @@ namespace Backend.Controllers
 
             var result = await _userManager.CreateAsync(newUser, request.Password);
             if (!result.Succeeded)
-                return new ObjectResult(result.Errors.First()) { StatusCode = 406 };
+            {
+                string? errors = string.Empty;
+
+                foreach (IdentityError? error in result.Errors)
+                    errors += $"{error.Description},";
+                return new ObjectResult(errors) { StatusCode = 406 };
+            }
 
             await _userStore.SetUserNameAsync(newUser, request.Email, CancellationToken.None);
             await _emailStore.SetEmailAsync(newUser, request.Email, CancellationToken.None);
@@ -100,6 +110,7 @@ namespace Backend.Controllers
 
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, code);
+            await _signInManager.SignInAsync(user, false);
             if (result.Succeeded) return Ok("Thank you for confirming your email.");
             else return Forbid(result.Errors.First().Description);
         }
@@ -111,9 +122,14 @@ namespace Backend.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var result = await _signInManager.PasswordSignInAsync(request.Email, request.Password, !string.IsNullOrEmpty(request.RememberMe), true);
+            User? user = _userManager.FindByEmailAsync(request.Email).Result;
+            if (user is null) return Forbid();
 
-            if (result.Succeeded) return Ok();
+            var result = await _signInManager.PasswordSignInAsync(request.Email, request.Password, !string.IsNullOrEmpty(request.RememberMe), true);
+            var jwt = await _jwtService.CreateJwt(user);
+            string jwtString = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            if (result.Succeeded) return Ok(new { j = jwtString });
             else if (result.IsLockedOut) return new ObjectResult("This account is locked out") { StatusCode = 403 };
             else if (result.IsNotAllowed) return new ObjectResult("Kindly confirm you email through the mail sent to you") { StatusCode = 403 };
             else if (!result.Succeeded) return new ObjectResult("Wrong credentials") { StatusCode = 403 };
