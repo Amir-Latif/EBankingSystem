@@ -28,15 +28,14 @@ namespace Backend.Services.SendGrid
             var body = mailTemplate.Replace("[message]", htmlMessage);
 
             var client = new SendGridClient(_options.Key);
-            var msg = new SendGridMessage()
-            {
-                From = new EmailAddress(_options.Email, "Team 12 - Sprints"),
-                Subject = subject,
-                PlainTextContent = body,
-                HtmlContent = body
-            };
-            msg.AddTo(new EmailAddress(toEmail));
 
+            var msg = MailHelper.CreateSingleEmail(
+                        new EmailAddress(_options.Email, "Team 12 - Sprints"),
+                        new EmailAddress(toEmail),
+                        subject,
+                        body,
+                        body
+                                                    );
             // Disable click tracking.
             // See https://sendgrid.com/docs/User_Guide/Settings/tracking.html
             msg.SetClickTracking(false, false);

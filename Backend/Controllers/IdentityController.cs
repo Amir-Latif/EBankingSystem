@@ -111,7 +111,10 @@ namespace Backend.Controllers
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, code);
             await _signInManager.SignInAsync(user, false);
-            if (result.Succeeded) return Ok("Thank you for confirming your email.");
+            var jwt = await _jwtService.CreateJwt(user);
+            string jwtString = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            if (result.Succeeded) return Ok(new { j = jwtString });
             else return Forbid(result.Errors.First().Description);
         }
         #endregion
@@ -142,6 +145,62 @@ namespace Backend.Controllers
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
+            return Ok();
+        }
+        #endregion
+
+        #region Request Password Reset
+        [HttpPost("requestPasswordreset")]
+        public async Task<IActionResult> RequestPasswordReset([FromForm] RequestPasswordReset request)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(request.Email);
+                if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+                    return Forbid();
+
+                // Prepare Confirmation Url
+                var code = await _userManager.GeneratePasswordResetTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                string EmailResetUrl = $"{Request.Scheme}://{Request.Host}/api/identity/resetPassword?userId={user.Id}&code={code}";
+
+                await _emailSender.SendEmailAsync(
+                    request.Email,
+                    "Reset Password",
+                    $"<p>Please reset your password by  <a href=\"{EmailResetUrl}\">clicking here</a>.</p>");
+
+                return Ok();
+            }
+            return Ok();
+        }
+
+        #endregion
+
+        #region Reset Password
+        [HttpPost("resetPassword")]
+        public async Task<IActionResult> ResetPassword([FromForm] ResetPassword request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Forbid();
+            }
+
+            var user = await _userManager.FindByIdAsync(request.UserId);
+            if (user == null)
+                return Forbid();
+
+            var code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(request.Code));
+
+            var result = await _userManager.ResetPasswordAsync(user, code, request.NewPassword);
+            if (result.Succeeded)
+                return Ok();
+            else
+            {
+                string errors = string.Empty;
+                foreach (IdentityError? error in result.Errors)
+                    errors += $"{error.Description},";
+                return new ObjectResult(errors) { StatusCode = 406 };
+            }
             return Ok();
         }
         #endregion

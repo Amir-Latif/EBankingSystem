@@ -19,6 +19,16 @@
         public string CurrentPassword { get; set; }
         public string NewPassword { get; set; }
     }
+    public class RequestPasswordReset
+    {
+        public string Email { get; set; }
+    }
+    public class ResetPassword
+    {
+        public string UserId { get; set; }
+        public string Code { get; set; }
+        public string NewPassword { get; set; }
+    }
     public class ManageCustomer
     {
         public string Email { get; set; }
