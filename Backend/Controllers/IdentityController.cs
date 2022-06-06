@@ -201,7 +201,6 @@ namespace Backend.Controllers
                     errors += $"{error.Description},";
                 return new ObjectResult(errors) { StatusCode = 406 };
             }
-            return Ok();
         }
         #endregion
 
