@@ -48,7 +48,9 @@ export default function Admin() {
       },
     }).then((response) => {
       // Check if the status code == 200
-      if (response.ok) response.json().then((data) => console.log(data));
+      if (response.ok) {
+        response.json().then((data) => console.log(data));
+      }
       // if not, check what is the error
       else response.json().then((data) => console.log(data.description));
     });
@@ -56,7 +58,8 @@ export default function Admin() {
 
   return (
     <>
-      <h1>Manage Customer</h1>
+      <h1>Admin APIs</h1>
+      <h2>Manage Customer</h2>
       <form onClick={manageCustomer}>
         <input type="text" name="email" placeholder="email" />
         <select name="status" defaultValue="Active">
@@ -68,7 +71,7 @@ export default function Admin() {
         <button type="submit">submit</button>
       </form>
 
-      <h1>Manage Account</h1>
+      <h2>Manage Account</h2>
       <form onClick={manageAccount}>
         <input type="text" name="account" placeholder="account Id" />
         <select name="status" defaultValue="Active">
@@ -80,7 +83,7 @@ export default function Admin() {
         <button type="submit">submit</button>
       </form>
 
-      <h1>Get Customer Status</h1>
+      <h2>Get Customer Status</h2>
       <button onClick={getCustomerStatus}>Get Customer Status</button>
     </>
   );

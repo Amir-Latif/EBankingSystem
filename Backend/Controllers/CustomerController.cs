@@ -80,25 +80,58 @@ namespace Backend.Controllers
                 if (account.Credit >= request.Amount)
                     account.Credit -= request.Amount;
                 else return new ObjectResult("Insufficient credit") { StatusCode = 405 };
+
+                _db.Transactions.Add(new Transaction()
+                {
+                    Type = transactionActions.Withdraw,
+                    Amount = request.Amount,
+                    AccountId = request.Account,
+                });
             }
 
             else if (request.Action == transactionActions.Deposit)
+            {
                 account.Credit += request.Amount;
+
+                _db.Transactions.Add(new Transaction()
+                {
+                    Type = transactionActions.Deposit,
+                    Amount = request.Amount,
+                    AccountId = request.Account,
+                });
+            }
 
             else if (request.Action == transactionActions.Transfer)
             {
+                // Validations
                 Account? transferredTo = _db.Accounts.FirstOrDefault(e => e.Id == request.TransferredTo);
                 if (transferredTo is null)
                     return new ObjectResult("The account that you want to transfer to does not exist") { StatusCode = 405 };
-               if (transferredTo.Status != statuses.Active)
+                if (transferredTo.Status != statuses.Active)
                     return new ObjectResult("The account that you want to transfer to is not activated") { StatusCode = 405 };
 
+                // Action
                 if (account.Credit >= request.Amount)
                     account.Credit -= request.Amount;
                 else return new ObjectResult("Insufficient credit") { StatusCode = 405 };
 
                 account.Credit -= request.Amount;
                 transferredTo.Credit += request.Amount;
+
+                _db.Transactions.Add(new Transaction()
+                {
+                    Type = transactionActions.Withdraw,
+                    Amount = request.Amount,
+                    AccountId = request.Account,
+                });
+
+
+                _db.Transactions.Add(new Transaction()
+                {
+                    Type = transactionActions.Deposit,
+                    Amount = request.Amount,
+                    AccountId = request.TransferredTo!,
+                });
             }
 
             await _db.SaveChangesAsync();

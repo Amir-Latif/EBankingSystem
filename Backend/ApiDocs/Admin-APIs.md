@@ -15,12 +15,12 @@ status: one of ["Active", "Pending", "Suspended", "Rejected"] (case sensetive)
 ## Response
 
 status code 200 if successful
-status 404 if user does not exist with a response body `"User does not exist"`
+status 406 if user does not exist with a response body `"User does not exist"`
 status 400 if the status is not from the options
 
 <!-- #endregion -->
 =====================================================================
-<!-- #region manage Account -->
+<!-- region manage Account -->
 # Manage Account status
 
 ## Request Data
@@ -31,7 +31,7 @@ status: one of ["Active", "Pending", "Suspended", "Rejected"] (case sensetive)
 ## Response
 
 status code 200 if successful
-status 404 if user does not exist with a response body `"Account does not exist"`
+status 405 if user does not exist with a response body `"Account does not exist"`
 status 400 if the status is not from the options
 
 <!-- #endregion -->

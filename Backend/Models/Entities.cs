@@ -8,7 +8,6 @@ namespace Backend.Models
         public string Name { get; set; }
         public string Status { get; set; } = statuses.Pending;
         public DateTime CreationDate { get; set; } = DateTime.UtcNow;
-        public virtual ICollection<Account> Accounts { get; set; }
     }
     public class Account
     {
@@ -21,12 +20,11 @@ namespace Backend.Models
         public long Credit { get; set; } = 1000;
         public string Status { get; set; } = statuses.Pending;
         public DateTime CreationDate { get; set; } = DateTime.UtcNow;
-        public virtual ICollection<Transaction> Transactions { get; set; }
     }
     public class Transaction
     {
         public string Id { get; set; } = Guid.NewGuid().ToString();
-        // Withdrawal or Deposit
+        // Withdrawal or Deposit or transfer
         public string Type { get; set; }
         public long Amount { get; set; }
         public string AccountId { get; set; }

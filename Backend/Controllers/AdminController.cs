@@ -58,7 +58,7 @@ namespace Backend.Controllers
 
             Account? account = _db.Accounts.FirstOrDefault(e => e.Id == request.Account);
             if (account is null)
-                return NotFound("No such account");
+                return new ObjectResult("No such account") { StatusCode = 405};
 
             // Request Action
             account.Status = request.Status;

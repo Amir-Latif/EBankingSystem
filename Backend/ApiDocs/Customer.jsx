@@ -56,28 +56,47 @@ export default function Customer() {
 
   return (
     <>
-      <h1>Create Account</h1>
-      <form onClick={createAccount}>
+      <h1>Customer APIs</h1>
+      <h2>Create Account</h2>
+      <form onSubmit={createAccount}>
         <select name="type" defaultValue="Current">
           <option value="Current">Current</option>
           <option value="Saving">Saving</option>
         </select>
-        <input type="number" name="credit" placeholder="Starting credit" />
+        <input
+          type="number"
+          name="credit"
+          placeholder="Starting credit"
+          required
+          min={1000}
+        />
         <button type="submit">submit</button>
       </form>
 
-      <h1>Make Transaction</h1>
+      <h2>Make Transaction</h2>
       <form onClick={makeTransaction}>
         <select name="action" defaultValue="Deposit">
           <option value="Deposit">Deposit</option>
           <option value="Withdraw">Withdraw</option>
           <option value="Transfer">Transfer</option>
         </select>
-        <input type="number" name="credit" placeholder="Starting credit" />
+        <input type="text" name="account" required placeholder="Account ID" />
+        <input
+          type="number"
+          name="amount"
+          placeholder="amount"
+          required
+          min={1}
+        />
+        <input
+          type="text"
+          name="transferredTo"
+          placeholder="if you choose to transfer, kindly type the account ID of the account you want to transfer to"
+        />
         <button type="submit">submit</button>
       </form>
 
-      <h1>Get Transaction Log</h1>
+      <h2>Get Transaction Log</h2>
       <button onClick={getTransactionLog}>Get Transaction Log</button>
     </>
   );
