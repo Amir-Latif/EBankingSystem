@@ -1,0 +1,128 @@
+/* Footer */
+.footer {
+    padding: 20px 100px 10px;
+    bottom: 0;
+    background-color: var(--clr-bg-footer);
+    color: var(--clr-body);
+}
+
+.footer a,
+p {
+    color: var(--clr-sec);
+    font-size: var(--fs-sec);
+    transition: var(--transition);
+}
+
+.footer a:hover {
+    color: var(--clr-hover);
+    text-decoration: underline;
+}
+
+.footer .prim {
+    margin-bottom: 20px;
+}
+
+.footer .info {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.footer .social {
+    display: flex;
+    gap: 30px;
+}
+
+.footer .social i {
+    font-size: 20px;
+}
+
+.footer .sec {
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 1em;
+    justify-content: space-between;
+    margin-top: 15px;
+    gap: 10px;
+}
+
+.footer .Policy {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+@media(max-width:570px) {
+    .subscription {
+        padding: 50px;
+    }
+
+    .subscription_input {
+        flex-direction: column;
+        justify-items: center;
+        align-items: center;
+        gap: 7px;
+    }
+
+    .subscription button {
+        padding: 15px;
+        margin-left: 0;
+        border-width: 0;
+    }
+
+    .subscription button:hover {
+        border-color: black;
+    }
+
+    .subscription input {
+        min-width: 350px;
+        margin-left: 0;
+        letter-spacing: 0;
+        padding: 0 35px;
+    }
+
+    .column a {
+        font-size: 18px;
+    }
+
+    .Policy a,
+    .copyright {
+        text-align: center;
+    }
+
+    .column h4 {
+        font-size: 22px;
+    }
+
+    .footer {
+        padding: 30px 80px;
+        text-align: center;
+    }
+
+    .footer .sec {
+        justify-content: center;
+    }
+}
+
+@media(max-width:400px) {
+    .footer .info {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .column a {
+        font-size: 18px;
+    }
+
+    .column h4 {
+        font-size: 30px;
+    }
+
+    .footer .social {
+        justify-content: center;
+    }
+}

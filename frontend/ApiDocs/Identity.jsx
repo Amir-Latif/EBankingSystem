@@ -4,7 +4,7 @@ export default function Identity() {
   function register(e) {
     e.preventDefault();
 
-    fetch("https://localhost:7035/api/identity/register", {
+    fetch("https://ebankingsystem.herokuapp.com/api/identity/register", {
       method: "POST",
       headers: {
         mode: "cors",
@@ -20,7 +20,7 @@ export default function Identity() {
 
   function login(e) {
     e.preventDefault();
-    fetch("https://localhost:7035/api/identity/login", {
+    fetch("https://ebankingsystem.herokuapp.com/api/identity/login", {
       method: "POST",
       headers: {
         mode: "cors",
@@ -40,7 +40,7 @@ export default function Identity() {
   function logout() {
     document.cookie = "j=''; expires=Thu, 01 Jan 1970 00:00:00 UTC";
 
-    fetch("https://localhost:7035/api/identity/logout", {
+    fetch("https://ebankingsystem.herokuapp.com/api/identity/logout", {
       method: "GET",
       headers: {
         mode: "cors",
@@ -54,7 +54,7 @@ export default function Identity() {
   function requestPasswordReset(e) {
     e.preventDefault();
 
-    fetch("https://localhost:7035/api/identity/requestPasswordReset", {
+    fetch("https://ebankingsystem.herokuapp.com/api/identity/requestPasswordReset", {
       method: "POST",
       headers: {
         mode: "cors",
@@ -69,7 +69,7 @@ export default function Identity() {
   function changePassword(e) {
     e.preventDefault();
 
-    fetch("https://localhost:7035/api/identity/changePassword", {
+    fetch("https://ebankingsystem.herokuapp.com/api/identity/changePassword", {
       method: "POST",
       headers: {
         mode: "cors",
@@ -83,7 +83,7 @@ export default function Identity() {
   function resetPassword(e) {
     e.preventDefault();
 
-    fetch("https://localhost:7035/api/identity/resetPassword", {
+    fetch("https://ebankingsystem.herokuapp.com/api/identity/resetPassword", {
       method: "POST",
       headers: {
         mode: "cors",

@@ -4,7 +4,7 @@ export default function Admin() {
   function manageCustomer(e) {
     e.preventDefault();
 
-    fetch("https://localhost:7035/api/admin/manageCustomer", {
+    fetch("https://ebankingsystem.herokuapp.com/api/admin/manageCustomer", {
       method: "POST",
       headers: {
         mode: "cors",
@@ -22,7 +22,7 @@ export default function Admin() {
   function manageAccount(e) {
     e.preventDefault();
 
-    fetch("https://localhost:7035/api/admin/manageAccount", {
+    fetch("https://ebankingsystem.herokuapp.com/api/admin/manageAccount", {
       method: "POST",
       headers: {
         mode: "cors",
@@ -40,7 +40,7 @@ export default function Admin() {
   function getCustomerStatus(e) {
     e.preventDefault();
 
-    fetch("https://localhost:7035/api/admin/getCustomerStatus", {
+    fetch("https://ebankingsystem.herokuapp.com/api/admin/getCustomerStatus", {
       method: "GET",
       headers: {
         mode: "cors",

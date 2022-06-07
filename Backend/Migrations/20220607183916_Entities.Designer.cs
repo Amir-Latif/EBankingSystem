@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220605160916_DefineRoles")]
-    partial class DefineRoles
+    [Migration("20220607183916_Entities")]
+    partial class Entities
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -293,7 +293,7 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.Account", b =>
                 {
                     b.HasOne("Backend.Models.User", "User")
-                        .WithMany("Accounts")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -304,7 +304,7 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.Transaction", b =>
                 {
                     b.HasOne("Backend.Models.Account", "Account")
-                        .WithMany("Transactions")
+                        .WithMany()
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -361,16 +361,6 @@ namespace Backend.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Backend.Models.Account", b =>
-                {
-                    b.Navigation("Transactions");
-                });
-
-            modelBuilder.Entity("Backend.Models.User", b =>
-                {
-                    b.Navigation("Accounts");
                 });
 #pragma warning restore 612, 618
         }

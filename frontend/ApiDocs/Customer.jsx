@@ -4,7 +4,7 @@ export default function Customer() {
   function createAccount(e) {
     e.preventDefault();
 
-    fetch("https://localhost:7035/api/customer/createAccount", {
+    fetch("https://ebankingsystem.herokuapp.com/api/customer/createAccount", {
       method: "POST",
       headers: {
         mode: "cors",
@@ -22,7 +22,7 @@ export default function Customer() {
   function makeTransaction(e) {
     e.preventDefault();
 
-    fetch("https://localhost:7035/api/customer/makeTransaction", {
+    fetch("https://ebankingsystem.herokuapp.com/api/customer/makeTransaction", {
       method: "POST",
       headers: {
         mode: "cors",
@@ -40,7 +40,7 @@ export default function Customer() {
   function getTransactionLog(e) {
     e.preventDefault();
 
-    fetch("https://localhost:7035/api/customer/getTransactionLog", {
+    fetch("https://ebankingsystem.herokuapp.com/api/customer/getTransactionLog", {
       method: "GET",
       headers: {
         mode: "cors",
