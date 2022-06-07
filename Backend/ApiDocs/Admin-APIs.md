@@ -7,16 +7,10 @@
 <!-- #region manage customer -->
 # Manage Customer status
 
-## Request
-
-```
-post('manageCustomer')
-```
-
-### Request Data
+## Request Data
 
 email: string
-status: one of ["Active", "Deactivated", "Suspended", "Rejected"] (case sensetive)
+status: one of ["Active", "Pending", "Suspended", "Rejected"] (case sensetive)
 
 ## Response
 
@@ -29,16 +23,10 @@ status 400 if the status is not from the options
 <!-- #region manage Account -->
 # Manage Account status
 
-## Request
-
-```
-post('manageAccount')
-```
-
-### Request Data
+## Request Data
 
 account: string (account ID)
-status: one of ["Active", "Deactivated", "Suspended", "Rejected"] (case sensetive)
+status: one of ["Active", "Pending", "Suspended", "Rejected"] (case sensetive)
 
 ## Response
 
@@ -50,12 +38,6 @@ status 400 if the status is not from the options
 =====================================================================
 <!-- #region get customer status -->
 # Get Customer Details
-
-## Request
-
-```
-get('getCustomerDetails')
-```
 
 ## Response
 name: string

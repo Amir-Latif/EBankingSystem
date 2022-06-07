@@ -99,7 +99,8 @@ export default function Identity() {
 
   return (
     <>
-      <h1>Register new user</h1>
+      <h1>Identity</h1>
+      <h2>Register new user</h2>
       <form onSubmit={register}>
         <input type="text" name="name" placeholder="Name" required />
         <input type="email" name="email" placeholder="email" required />
@@ -119,7 +120,7 @@ export default function Identity() {
         <button type="submit">Register</button>
       </form>
 
-      <h1>Login</h1>
+      <h2>Login</h2>
       <form onSubmit={login}>
         <input type="email" name="email" placeholder="email" required />
         <input
@@ -133,16 +134,16 @@ export default function Identity() {
         <button type="submit">login</button>
       </form>
 
-      <h1>Logout</h1>
+      <h2>Logout</h2>
       <button onClick={logout}>logout</button>
 
-      <h1>Request password reset</h1>
+      <h2>Request password reset</h2>
       <form onSubmit={requestPasswordReset}>
         <input type="email" name="email" placeholder="email" required />
         <button type="submit">request password reset</button>
       </form>
 
-      <h1>Reset Password</h1>
+      <h2>Reset Password</h2>
       <form onSubmit={resetPassword}>
         <input
           type="text"
@@ -160,7 +161,7 @@ export default function Identity() {
         <button type="submit">submit</button>
       </form>
 
-      <h1>Change password</h1>
+      <h2>Change password</h2>
       <form onSubmit={changePassword}>
         <input type="email" name="email" placeholder="email" required />
         <input

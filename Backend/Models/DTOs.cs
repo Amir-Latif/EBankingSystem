@@ -48,6 +48,7 @@
     {
         public string Action { get; set; }
         public long Amount { get; set; }
+        public string Account { get; set; }
         public string? TransferredTo { get; set; }
     }
 }

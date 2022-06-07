@@ -78,7 +78,7 @@ namespace Backend.Controllers
                 e.Status,
             }).ToList();
 
-            return Ok("");
+            return Ok(customers);
         }
         #endregion
     }
