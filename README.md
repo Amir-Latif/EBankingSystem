@@ -29,8 +29,8 @@ Open `appsettings.json` and update your email, password and mail service key in 
    `dotnet run` or `dotnet watch run` for development purposes
 
 ## Contributing
-Developed by Sprints Team 12
-Amir Latif: Backend and linking Backend to Frontend
+Developed by Sprints Team 12  
+Amir Latif: Backend and linking Backend to Frontend 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 ## Deployment
