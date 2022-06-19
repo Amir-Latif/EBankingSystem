@@ -1,0 +1,288 @@
+.container {
+  margin: 30px;
+  background: #fff;
+  padding: 30px 100px;
+  line-height: 28px;
+}
+
+/* Home */
+.greating {
+  background-color: hsl(230, 37%, 97%);
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 2px solid hsl(223, 47%, 23%);
+  border-radius: 5px;
+}
+
+.accounts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+}
+
+.accounts i {
+  font-size: 2em;
+  color: hsl(223, 47%, 23%);
+}
+
+.accounts a {
+  color: hsl(223, 47%, 23%);
+}
+
+.current_account,
+.add_account {
+  max-width: 250px;
+  color: aliceblue;
+}
+
+.accounts button {
+  border: 1px solid hsl(223, 47%, 23%);
+  font-size: 0.8em;
+  border-radius: 5px;
+  margin-top: 10px;
+  padding: 15px 45px;
+  font-size: var(--fs-button);
+  min-height: 200px;
+  background-color: hsl(0, 0%, 100%);
+  font-weight: 900;
+  transition: var(--transition);
+}
+
+.accounts button:hover {
+  background-color: hsl(222, 16%, 79%);
+  cursor: pointer;
+}
+
+/* Dashboard */
+.dashboard_flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  /*    justify-content: space-evenly; */
+}
+
+.balance {
+  border: 1px solid hsl(223, 47%, 23%);
+  box-shadow: 0 0rem 1rem rgba(0, 0, 0, 0.2);
+  margin-top: 20px;
+  font-size: 0.8em;
+  border-radius: 5px;
+  width: 100%;
+  padding: 30px 30px 50px;
+}
+
+.balance h1 {
+  font-size: 3em;
+  line-height: 35px;
+  font-weight: 200;
+  color: hsl(223, 47%, 23%);
+}
+
+.balance h3 {
+  margin-bottom: 10px;
+}
+
+.card {
+  display: block;
+  border-bottom: 1px solid hsl(224, 23%, 55%);
+  color: rgb(0, 0, 0);
+  font-size: 0.9em;
+  /*  position: relative; */
+}
+
+.card .icon {
+  color: hsl(0, 0%, 0%);
+  width: 20px;
+  display: inline-block;
+}
+
+.active {
+  width: 100%;
+}
+
+.active_account {
+  font-size: 1.2em;
+  margin-top: 15px;
+  border-top: 1px solid hsl(224, 23%, 55%);
+  color: hsl(120, 100%, 25%);
+  font-weight: 600;
+}
+
+.expired_account {
+  font-size: 1.2em;
+  margin-top: 15px;
+  border-top: 1px solid hsl(224, 23%, 55%);
+  color: hsl(0, 100%, 50%);
+  font-weight: 600;
+}
+
+:root {
+  --clr-hover: hsl(224, 23%, 55%);
+  --clr-header: hsl(223, 47%, 23%);
+  --clr-lte: hsl(0, 0%, 100%);
+  --clr-bg: hsl(230, 37%, 97%);
+  --clr-mix-theme: linear-gradient(
+    to top left,
+    hsl(223, 47%, 23%, 0.4) 0%,
+    hsl(224, 23%, 55%, 0.4) 100%
+  );
+  --clr-body: rgb(214, 199, 199);
+  --fs-button: 1em;
+  --transition: 0.3s;
+
+  --fs-header: 1.2em;
+  --fs-sec: 0.9em;
+  --clr-bg-footer: hsl(220, 6%, 20%);
+}
+
+/* Transaction */
+.transaction {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.transaction td,
+.transaction th {
+  border: 1px solid hsl(0, 0%, 87%);
+  padding: 8px;
+}
+
+.transaction tr:nth-child(even) {
+  background-color: hsl(0, 0%, 95%);
+}
+
+.transaction tr:hover {
+  background-color: hsl(0, 0%, 87%);
+}
+
+.transaction th {
+  text-align: left;
+  background-color: hsl(224, 23%, 55%);
+  color: hsl(0, 0%, 100%);
+}
+
+@media (max-width: 1000px) {
+  .transaction {
+    font-size: 0.9em;
+  }
+}
+@media (max-width: 1100px) {
+  .transaction {
+    font-size: 0.9em;
+  }
+  .setting {
+    width: 100%;
+  }
+}
+@media (max-width: 500px) {
+  .container {
+    overflow: hidden;
+  }
+}
+/* Setting */
+
+.setting_table {
+  border-collapse: collapse;
+  width: 100px;
+  margin-top: 20px;
+}
+
+.setting button {
+  padding: 3px 10px;
+}
+
+.setting button:hover {
+  cursor: pointer;
+}
+
+.setting td {
+  padding: 5px;
+  font-size: 1.2em;
+}
+
+.setting {
+  border: 1px solid hsl(223, 47%, 23%);
+  box-shadow: 0 0rem 1rem rgba(0, 0, 0, 0.2);
+  margin-top: 20px;
+  font-size: 0.8em;
+  border-radius: 5px;
+  /*     max-width: 500px; */
+  min-width: 45%;
+  padding: 30px 25px 50px;
+}
+
+.setting .setting_table {
+  border-top: 1px solid hsl(224, 23%, 55%);
+  min-width: 100%;
+}
+
+.flex {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+}
+
+@media (max-width: 1000px) {
+  .container {
+    margin: 30px;
+    background: none;
+    padding: 30px 0;
+    line-height: 28px;
+  }
+}
+.formWithDraw {
+  margin-left: 350px;
+}
+.RechargeInput {
+  width: 400px;
+}
+
+@media (max-width: 800px) {
+  .formWithDraw {
+    margin-left: 50px;
+  }
+  .RechargeInput {
+    width: 200px;
+  }
+}
+
+.flexContainer {
+  display: flex;
+}
+@media only screen and (max-width: 480px) {
+  .flexContainer {
+    flex-direction: column;
+  }
+}
+
+.accountsWrapper {
+  margin-top: 1em;
+}
+
+.radio {
+  align-items: center;
+}
+.radio > * {
+  margin-bottom: 0;
+}
+
+.inactiveAccount {
+  margin-top: 2em;
+  margin-left: 2em;
+}
+
+p {
+  font-weight: 500;
+  font-size: 2em;
+}
+
+.paging {
+  display: flex;
+  margin: 2em 2em 5em;
+}
+
+.pagingButton {
+  margin-right: 1em;
+}

@@ -57,10 +57,6 @@ namespace Backend.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("text");
 
-                    b.Property<string>("AccountId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<long>("Amount")
                         .HasColumnType("bigint");
 
@@ -70,7 +66,42 @@ namespace Backend.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("TransactorId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TransferredToId")
+                        .HasColumnType("text");
+
                     b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TransactorId");
+
+                    b.HasIndex("TransferredToId");
+
+                    b.ToTable("Transactions");
+                });
+
+            modelBuilder.Entity("Backend.Models.TransactionAccount", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AccountId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<long>("Credit")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("TransactionId")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -78,7 +109,9 @@ namespace Backend.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.ToTable("Transactions");
+                    b.HasIndex("TransactionId");
+
+                    b.ToTable("TransactionAccounts");
                 });
 
             modelBuilder.Entity("Backend.Models.User", b =>
@@ -89,8 +122,20 @@ namespace Backend.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("integer");
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Country")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime>("CreationDate")
@@ -129,6 +174,10 @@ namespace Backend.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("PostalCode")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");
@@ -291,7 +340,7 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Models.Account", b =>
                 {
                     b.HasOne("Backend.Models.User", "User")
-                        .WithMany()
+                        .WithMany("Accounts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -301,13 +350,38 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Models.Transaction", b =>
                 {
+                    b.HasOne("Backend.Models.Account", "Transactor")
+                        .WithMany()
+                        .HasForeignKey("TransactorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Models.Account", "TransferredTo")
+                        .WithMany()
+                        .HasForeignKey("TransferredToId");
+
+                    b.Navigation("Transactor");
+
+                    b.Navigation("TransferredTo");
+                });
+
+            modelBuilder.Entity("Backend.Models.TransactionAccount", b =>
+                {
                     b.HasOne("Backend.Models.Account", "Account")
                         .WithMany()
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Backend.Models.Transaction", "Transaction")
+                        .WithMany()
+                        .HasForeignKey("TransactionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Account");
+
+                    b.Navigation("Transaction");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -359,6 +433,11 @@ namespace Backend.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Backend.Models.User", b =>
+                {
+                    b.Navigation("Accounts");
                 });
 #pragma warning restore 612, 618
         }

@@ -27,17 +27,65 @@ namespace Backend.Controllers
         }
         #endregion
 
+        #region Get Customer Data
+        [HttpGet("getCustomerData")]
+        public async Task<IActionResult> GetCustomerData()
+        {
+            Statuses statuses = new();
+            User? user = await _userManager.FindByIdAsync(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
+            // Validations
+            if (user is null || user.Status != statuses.Active)
+                return Forbid();
+
+            // Action
+            _db.Accounts.Load();
+
+            Dictionary<string, object> userData = new()
+            {
+                {"id", user.Id },
+                {"name", user.Name },
+                {"email", user.Email },
+                {"phone", user.PhoneNumber },
+                {"address", user.Address },
+                {"city", user.City },
+                {"postal", user.PostalCode },
+                {"country", user.Country },
+                {"status", user.Status }
+            };
+
+            var accounts = user.Accounts;
+
+            if (accounts is not null)
+            {
+                userData.Add("accounts", accounts.Select(a => new { a.Id, a.Type, a.Status }));
+                userData.Add("totalBalance", accounts.Sum(a => a.Credit));
+            }
+
+            else
+            {
+                userData.Add("accounts", new List<Account>());
+                userData.Add("totalBalance", 0);
+            }
+
+            return Ok(userData);
+        }
+
+        #endregion
+
         #region Create Account
         [HttpPost("createAccount")]
         public async Task<IActionResult> CreateAccount([FromForm] CreateAccount request)
         {
             // Validating the request
             AccountTypes accountTypes = new();
+            Statuses statuses = new();
             User? user = await _userManager.FindByIdAsync(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
 
             if (user is null ||
                 !accountTypes.Contains(request.Type) ||
-                request.Credit < 1000
+                request.Credit < 1000 ||
+                user.Status != statuses.Pending
                 )
                 return Forbid();
 
@@ -52,7 +100,7 @@ namespace Backend.Controllers
                 Credit = request.Credit,
             });
             await _db.SaveChangesAsync();
-            return Ok(accountId);
+            return Ok(_db.Accounts.Where(e => e.Id == accountId).Select(e => new { e.Id, e.Type, e.Status }));
         }
         #endregion
 
@@ -68,24 +116,28 @@ namespace Backend.Controllers
 
             if (user is null ||
                 !transactionActions.Contains(request.Action) ||
-                request.Amount < 1 ||
+                request.Amount < 500 ||
                 account is null ||
                 account.Status != statuses.Active
                 )
                 return Forbid();
 
             // Action
+            string transactionId = Guid.NewGuid().ToString();
+
             if (request.Action == transactionActions.Withdraw)
             {
                 if (account.Credit >= request.Amount)
                     account.Credit -= request.Amount;
                 else return new ObjectResult("Insufficient credit") { StatusCode = 405 };
 
+
                 _db.Transactions.Add(new Transaction()
                 {
+                    Id = transactionId,
                     Type = transactionActions.Withdraw,
                     Amount = request.Amount,
-                    AccountId = request.Account,
+                    TransactorId = request.Account,
                 });
             }
 
@@ -95,9 +147,10 @@ namespace Backend.Controllers
 
                 _db.Transactions.Add(new Transaction()
                 {
+                    Id = transactionId,
                     Type = transactionActions.Deposit,
                     Amount = request.Amount,
-                    AccountId = request.Account,
+                    TransactorId = request.Account,
                 });
             }
 
@@ -120,42 +173,80 @@ namespace Backend.Controllers
 
                 _db.Transactions.Add(new Transaction()
                 {
+                    Id = transactionId,
                     Type = transactionActions.Withdraw,
                     Amount = request.Amount,
-                    AccountId = request.Account,
-                });
-
-
-                _db.Transactions.Add(new Transaction()
-                {
-                    Type = transactionActions.Deposit,
-                    Amount = request.Amount,
-                    AccountId = request.TransferredTo!,
+                    TransactorId = request.Account,
+                    TransferredToId = request.TransferredTo!
                 });
             }
 
+            _db.TransactionAccounts.Add(new TransactionAccount()
+            {
+                AccountId = request.Account,
+                TransactionId = transactionId,
+                Credit = account.Credit
+            });
+
             await _db.SaveChangesAsync();
-            return Ok();
+            return Ok(transactionId);
         }
         #endregion
 
         #region Get Transaction Logs
-        [HttpGet("getTransactionLog")]
-        public async Task<IActionResult> GetTransactionLogs()
+        [HttpGet("getTransactionLog/{accountId}")]
+        public async Task<IActionResult> GetTransactionLogs(string accountId)
         {
             User? user = await _userManager.FindByIdAsync(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+
             // Request Validation
-            if (user == null)
+            if (user is null || _db.Accounts.FirstOrDefault(e => e.UserId == user.Id && e.Id == accountId) is null)
                 return Forbid();
 
-            var userAccounts = _db.Accounts.Where(e => e.UserId == user.Id);
-            var accountsId = userAccounts.Select(e => e.Id);
-
-            if (userAccounts is null)
-                return Ok("You have not created accounts yet");
-
-            return Ok(_db.Transactions.Where(e => accountsId.Contains(e.AccountId)));
+            // Action
+            return Ok(_db.Transactions
+                    .Join(
+                        _db.TransactionAccounts,
+                        transaction => transaction.Id,
+                        transactionAccount => transactionAccount.TransactionId,
+                        (transaction, transactionAccount) => new
+                        {
+                            transaction.Id,
+                            transaction.Date,
+                            transaction.Type,
+                            transaction.Amount,
+                            transactionAccount.Credit
+                        }
+                    ).ToList());
         }
+        #endregion
+
+        #region Edit Customer Data
+        [HttpPost("editCustomerData")]
+        public async Task<IActionResult> EditCustomerData([FromForm] ChangeCredentials request)
+        {
+            Statuses statuses = new();
+            User? user = await _userManager.FindByIdAsync(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+            // Request Validation
+            if (user == null || user.Status != statuses.Active)
+                return Forbid();
+
+            // Action
+            user.PhoneNumber = request.Phone;
+            user.UserName = request.Email;
+            await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.Password);
+            user.Email = request.Email;
+            user.Address = request.Address;
+            user.City = request.City;
+            user.Country = request.Country;
+            user.Name = $"{request.FirstName} {request.LastName}";
+            user.PostalCode = request.PostalCode;
+
+            await _db.SaveChangesAsync();
+            return Ok();
+        }
+
+
         #endregion
     }
 }

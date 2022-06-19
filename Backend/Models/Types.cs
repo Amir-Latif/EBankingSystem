@@ -17,7 +17,6 @@
     {
         public string Active { get; set; } = "Active";
         public string Pending { get; set; } = "Pending";
-        public string Rejected { get; set; } = "Rejected";
         public string Suspended { get; set; } = "Suspended";
     }
     public class AccountTypes : BankType

@@ -1,29 +1,5 @@
  @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&display=swap');
 
- @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
-
- * {
-     margin: 0;
-     padding: 0;
-     box-sizing: border-box;
-     text-decoration: none;
-     font-family: 'Source Sans Pro', sans-serif;
-     scroll-behavior: smooth;
- }
- 
- :root {
-     --clr-hover: hsl(224, 23%, 55%);
-     --clr-header: hsl(223, 47%, 23%);
-     --clr-lte: hsl(0, 0%, 100%);
-     --clr-bg: hsl(230, 37%, 97%);
-     --fs-button: 1em;
-     --transition: 0.3s;
- 
-     --clr-body: rgb(214, 199, 199);
-     --fs-header: 1.2em;
-     --fs-sec: 0.9em;
-     --clr-bg-footer: hsl(220, 6%, 20%);
- }
 .hero {
     /* background: url(); */
     background-blend-mode: multiply;

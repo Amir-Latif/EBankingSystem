@@ -1,0 +1,123 @@
+body {
+  background: #f5f6fa;
+}
+
+/* SideBar */
+.sidebar {
+  /*background: hsl(223, 47%, 23%);*/
+  background: white;
+  min-width: 20vw;
+  height: 100%;
+  max-height: 600px;
+  padding: 20px 0;
+  margin-top: 40px;
+  margin-left: 0;
+  transition: all 0.5s ease;
+  overflow-y: scroll;
+}
+
+/* Profile */
+.sidebar .profile {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.sidebar .profile img {
+  display: block;
+  width: 100px;
+  height: 100px;
+  border: 3px solid rgb(255, 255, 255);
+  border-radius: 50%;
+  margin: auto;
+}
+
+.sidebar .profile h3 {
+  /*  color: rgb(255, 255, 255);*/
+  color: black;
+  margin: 10px 0 5px;
+}
+
+.sidebar .profile p {
+  color: hsl(230, 37%, 97%);
+  font-size: 0.8em;
+}
+
+/* Items */
+.sidebar ul li span input {
+  display: block;
+  padding: 13px 0px;
+  border-bottom: 1px solid hsl(224, 23%, 55%);
+  /* color: rgb(241, 237, 237);*/
+  color: darkcyan;
+  font-size: 0.9em;
+  position: relative;
+  cursor: pointer;
+  margin-left: 20px;
+  background-color: white;
+  width: 210px;
+}
+
+.sidebar ul li .icon {
+  /* color: hsl(230, 37%, 97%);*/
+  color: black;
+  width: 30px;
+  display: inline-block;
+}
+
+/*  */
+
+.sidebar ul .li :hover,
+.sidebar ul .actives {
+  color: hsl(223, 47%, 23%);
+  background: white;
+  border-right: 2px solid hsl(223, 47%, 23%);
+}
+
+.disable {
+  display: none;
+}
+
+.sidebar ul .li :hover .icon,
+.sidebar ul .li .active .icon {
+  /* color: hsl(223, 47%, 23%);*/
+  color: black;
+}
+
+/* .sidebar ul li a:hover:before,
+.sidebar ul li a.active:before {
+    display: block;
+} */
+
+/* NavBar */
+.wrapper {
+  width: calc(100% - 200px);
+  margin-left: 200px;
+  transition: all 0.5s ease;
+}
+
+.navbar {
+  background: hsl(223, 47%, 23%);
+  height: 50px;
+  display: flex;
+  align-items: center;
+  padding: 0 30px;
+}
+
+.navbar .hamburger {
+  font-size: 1.5em;
+  color: hsl(0, 0%, 100%);
+}
+
+.navbar .hamburger :hover {
+  color: hsl(224, 23%, 55%);
+}
+
+/* On Activation */
+body.active .sidebar {
+  left: -200px;
+}
+
+body.active .wrapper {
+  margin-left: 0;
+  width: 100%;
+}

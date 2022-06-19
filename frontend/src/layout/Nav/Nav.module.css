@@ -1,0 +1,35 @@
+header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 50px;
+    background-color: var(--clr-bg-header-sub);
+    width: 100%;
+    box-shadow: 0 0 5px var(--clr-hover);
+}
+
+.logo {
+    background: -webkit-linear-gradient(hsl(223, 47%, 23%), hsl(224, 23%, 55%));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: 'Pacifico', cursive;
+    font-size: 1.5em;
+}
+
+header .flex {
+    display: flex;
+    align-items: center;
+    gap: 35px;
+    font-size: 1.2em;
+}
+
+header a {
+    font-weight: 700;
+    color: hsl(224, 23%, 55%);
+    transition: var(--transition);
+}
+
+header a:hover {
+    color: hsl(223, 47%, 23%);
+}

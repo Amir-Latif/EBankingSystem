@@ -1,7 +1,7 @@
 using Backend.Models;
 using Backend.Services.JWT;
+using Backend.Services.Mail;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using System.IdentityModel.Tokens.Jwt;
@@ -18,14 +18,14 @@ namespace Backend.Controllers
         private readonly IUserStore<User> _userStore;
         private readonly IUserEmailStore<User> _emailStore;
         private readonly SignInManager<User> _signInManager;
-        private readonly IEmailSender _emailSender;
+        private readonly IEmailService _emailSender;
         private readonly IJWTService _jwtService;
 
         public IdentityController(
             UserManager<User> userManager,
             IUserStore<User> userStore,
             SignInManager<User> signInManager,
-            IEmailSender emailSender,
+            IEmailService emailSender,
             IJWTService jwtService
             )
         {
@@ -54,19 +54,23 @@ namespace Backend.Controllers
             // Register User
             User newUser = new()
             {
-                Name = request.Name,
+                Name = $"{request.FirstName} {request.LastName}",
                 UserName = request.Email,
                 Email = request.Email,
-                PhoneNumber = request.Phone
+                PhoneNumber = request.Phone,
+                Address = request.Address,
+                City = request.City,
+                Country = request.Country,
+                PostalCode = request.PostalCode
             };
 
             var result = await _userManager.CreateAsync(newUser, request.Password);
             if (!result.Succeeded)
             {
-                string? errors = string.Empty;
+                List<string>? errors = new();
 
                 foreach (IdentityError? error in result.Errors)
-                    errors += $"{error.Description},";
+                    errors.Add(error.Description);
                 return new ObjectResult(errors) { StatusCode = 406 };
             }
 
@@ -86,7 +90,19 @@ namespace Backend.Controllers
             // Send Confirmation Email
             string htmlMessage = $"<p>Thank you for your registration</p><p> Kindly <a href=\"{EmailConfirmationUrl}\"> confirm your email </a></p>";
 
-            await _emailSender.SendEmailAsync(request.Email, "Identity Verification", htmlMessage);
+            var response = await _emailSender.SendEmailAsync(request.Email, $"{request.FirstName} {request.LastName}", "Identity Verification", htmlMessage);
+            // var confirmationResult = await _userManager.ConfirmEmailAsync(newUser, code);
+            // await _signInManager.SignInAsync(newUser, false);
+            // var jwt = await _jwtService.CreateJwt(newUser);
+            // string jwtString = new JwtSecurityTokenHandler().WriteToken(jwt);
+
+            // if (confirmationResult.Succeeded) return Ok(
+            //     new
+            //     {
+            //         j = jwtString,
+            //         r = _userManager.IsInRoleAsync(newUser, roles.Admin).Result ? "a" : "c"
+            //     });
+            // else return new ObjectResult(confirmationResult.Errors.First().Description) { StatusCode = 403 };
             return Ok();
         }
         #endregion
@@ -95,6 +111,7 @@ namespace Backend.Controllers
         [HttpGet("confirm")]
         public async Task<IActionResult> Confirm(string userId, string code)
         {
+            Roles roles = new();
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             if (userId is null || code is null)
@@ -114,7 +131,12 @@ namespace Backend.Controllers
             var jwt = await _jwtService.CreateJwt(user);
             string jwtString = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-            if (result.Succeeded) return Ok(new { j = jwtString });
+            if (result.Succeeded) return Ok(
+              new
+              {
+                  j = jwtString,
+                  r = _userManager.IsInRoleAsync(user, roles.Admin).Result ? "a" : "c"
+              });
             else return Forbid(result.Errors.First().Description);
         }
         #endregion
@@ -123,16 +145,24 @@ namespace Backend.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromForm] LoginRequest request)
         {
+            Roles roles = new();
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
             User? user = _userManager.FindByEmailAsync(request.Email).Result;
-            if (user is null) return Forbid();
+            if (user is null)
+                return new ObjectResult("No account is associated with this email") { StatusCode = 406 };
 
             var result = await _signInManager.PasswordSignInAsync(request.Email, request.Password, !string.IsNullOrEmpty(request.RememberMe), true);
             var jwt = await _jwtService.CreateJwt(user);
             string jwtString = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-            if (result.Succeeded) return Ok(new { j = jwtString });
+            if (result.Succeeded) return Ok(
+                new
+                {
+                    j = jwtString,
+                    rememberMe = request.RememberMe,
+                    r = _userManager.IsInRoleAsync(user, roles.Admin).Result ? "a" : "c"
+                });
             else if (result.IsLockedOut) return new ObjectResult("This account is locked out") { StatusCode = 403 };
             else if (result.IsNotAllowed) return new ObjectResult("Kindly confirm you email through the mail sent to you") { StatusCode = 403 };
             else if (!result.Succeeded) return new ObjectResult("Wrong credentials") { StatusCode = 403 };
@@ -166,6 +196,7 @@ namespace Backend.Controllers
 
                 await _emailSender.SendEmailAsync(
                     request.Email,
+                    "customer",
                     "Reset Password",
                     $"<p>Please reset your password by  <a href=\"{EmailResetUrl}\">clicking here</a>.</p>");
 

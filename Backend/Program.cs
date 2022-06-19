@@ -1,10 +1,9 @@
 using Backend.Data;
 using Backend.Models;
 using Backend.Services.JWT;
-using Backend.Services.SendGrid;
+using Backend.Services.Mail;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -65,9 +64,9 @@ services.AddAuthentication(options =>
             };
         });
 
-// SendGrid Mailing
-services.Configure<AuthMessageSenderOptions>(configuration.GetSection("SendGrid"));
-services.AddTransient<IEmailSender, EmailSender>();
+// Mailing
+services.Configure<MailSettings>(configuration.GetSection("MailSettings"));
+services.AddTransient<IEmailService, EmailService>();
 #endregion
 
 var app = builder.Build();

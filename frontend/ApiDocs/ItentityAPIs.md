@@ -7,15 +7,10 @@
 <!-- #region register -->
 # Register
 
-## Request
+## Request Data
 
-```
-post("api/identity/register")
-```
-
-### Request Data
-
-userName: string,
+firstName: string,
+lastName: string,
 email: string (must be validated using input type email in the frontend),
 password: string,
 
@@ -23,6 +18,7 @@ password: string,
 
 Status Code 200 successful
 status code 406: the user is already registered
+status code 400: with body containing an object of the errors
 
 - After registering, the customer receives an email to verify his mail before loging
 <!-- #endregion -->

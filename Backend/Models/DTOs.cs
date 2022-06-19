@@ -2,10 +2,20 @@
 {
     public class CredentialsRequest
     {
-        public string Name { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
         public string Phone { get; set; }
+        public string Address { get; set; }
+        public string City { get; set; }
+        public string Country { get; set; }
+        public string PostalCode { get; set; }
+    }
+
+    public class ChangeCredentials : CredentialsRequest
+    {
+        public string CurrentPassword { get; set; }
     }
     public class LoginRequest
     {
@@ -31,7 +41,7 @@
     }
     public class ManageCustomer
     {
-        public string Email { get; set; }
+        public string Id { get; set; }
         public string Status { get; set; }
     }
     public class ManageAccount
@@ -50,5 +60,9 @@
         public long Amount { get; set; }
         public string Account { get; set; }
         public string? TransferredTo { get; set; }
+    }
+    public class GetTransaction
+    {
+        public string AccountId { get; set; }
     }
 }
